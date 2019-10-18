@@ -1,3 +1,4 @@
+cordova.define("cordova-plugin-secure-storage.SecureStorage", function(require, exports, module) {
 var SecureStorage;
 
 var SUPPORTED_PLATFORMS = ['android', 'ios', 'windows'];
@@ -38,21 +39,23 @@ var _executeNativeMethod = function (success, error, nativeMethodName, args) {
             error(new Error('Error occured while executing native method.'));
         } else {
             // wrap string to Error instance if necessary
-            error(_isString(err) ? new Error(err) : err);
+            //error(_isString(err) ? new Error(err) : err);
+            error(err);
         }
     };
 
     cordova.exec(success, fail, 'SecureStorage', nativeMethodName, args);
 };
 
-SecureStorage = function (success, error, service, options) {
+SecureStorage = function (success, error, service, options, accessGroup) {
     var platformId = cordova.platformId;
     var opts = options && options[platformId] ? options[platformId] : {};
 
     this.service = service;
+    this.accessGroup = accessGroup;
 
     try {
-        _executeNativeMethod(success, error, 'init', [this.service, opts]);
+        _executeNativeMethod(success, error, 'init', [this.service, opts, this.accessGroup]);
     } catch (e) {
         error(e);
     }
@@ -65,7 +68,7 @@ SecureStorage.prototype = {
             if (!_isString(key)) {
                 throw new Error('Key must be a string');
             }
-            _executeNativeMethod(success, error, 'get', [this.service, key]);
+            _executeNativeMethod(success, error, 'get', [this.service, key, this.accessGroup]);
         } catch (e) {
             error(e);
         }
@@ -76,7 +79,7 @@ SecureStorage.prototype = {
             if (!_isString(value)) {
                 throw new Error('Value must be a string');
             }
-            _executeNativeMethod(success, error, 'set', [this.service, key, value]);
+            _executeNativeMethod(success, error, 'set', [this.service, key, value, this.accessGroup]);
         } catch (e) {
             error(e);
         }
@@ -87,7 +90,7 @@ SecureStorage.prototype = {
             if (!_isString(key)) {
                 throw new Error('Key must be a string');
             }
-            _executeNativeMethod(success, error, 'remove', [this.service, key]);
+            _executeNativeMethod(success, error, 'remove', [this.service, key, this.accessGroup]);
         } catch (e) {
             error(e);
         }
@@ -95,7 +98,7 @@ SecureStorage.prototype = {
 
     keys: function (success, error) {
         try {
-            _executeNativeMethod(success, error, 'keys', [this.service]);
+            _executeNativeMethod(success, error, 'keys', [this.service, this.accessGroup]);
         } catch (e) {
             error(e);
         }
@@ -103,7 +106,7 @@ SecureStorage.prototype = {
 
     clear: function (success, error) {
         try {
-            _executeNativeMethod(success, error, 'clear', [this.service]);
+            _executeNativeMethod(success, error, 'clear', [this.service, this.accessGroup]);
         } catch (e) {
             error(e);
         }
@@ -131,3 +134,5 @@ if (!cordova.plugins.SecureStorage) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SecureStorage;
 }
+
+});

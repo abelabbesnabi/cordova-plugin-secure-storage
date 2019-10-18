@@ -46,12 +46,14 @@
 {
     NSString *service = [command argumentAtIndex:0];
     NSString *key = [command argumentAtIndex:1];
+    NSString *accessGroup = [command argumentAtIndex:2];
     [self.commandDelegate runInBackground:^{
         NSError *error;
 
         SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
         query.service = service;
         query.account = key;
+        query.accessGroup = accessGroup;
 
         if ([query fetch:&error]) {
             [self successWithMessage: query.password : command.callbackId];
@@ -66,6 +68,7 @@
     NSString *service = [command argumentAtIndex:0];
     NSString *key = [command argumentAtIndex:1];
     NSString *value = [command argumentAtIndex:2];
+    NSString *accessGroup = [command argumentAtIndex:3];
     [self.commandDelegate runInBackground:^{
         NSError *error;
 
@@ -73,6 +76,7 @@
         query.service = service;
         query.account = key;
         query.password = value;
+        query.accessGroup = accessGroup;
 
         if ([query save:&error]) {
             [self successWithMessage: key : command.callbackId];
@@ -86,12 +90,14 @@
 {
     NSString *service = [command argumentAtIndex:0];
     NSString *key = [command argumentAtIndex:1];
+    NSString *accessGroup = [command argumentAtIndex:2];
     [self.commandDelegate runInBackground:^{
         NSError *error;
 
         SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
         query.service = service;
         query.account = key;
+        query.accessGroup = accessGroup;
 
         if ([query deleteItem:&error]) {
             [self successWithMessage: key : command.callbackId];
@@ -104,11 +110,13 @@
 - (void)keys:(CDVInvokedUrlCommand*)command
 {
     NSString *service = [command argumentAtIndex:0];
+    NSString *accessGroup = [command argumentAtIndex:1];
     [self.commandDelegate runInBackground:^{
         NSError *error;
 
         SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
         query.service = service;
+        query.accessGroup = accessGroup;
 
         NSArray *accounts = [query fetchAll:&error];
         if (accounts) {
@@ -131,11 +139,13 @@
 - (void)clear:(CDVInvokedUrlCommand*)command
 {
     NSString *service = [command argumentAtIndex:0];
+    NSString *accessGroup = [command argumentAtIndex:1];
     [self.commandDelegate runInBackground:^{
         NSError *error;
 
         SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];
         query.service = service;
+        query.accessGroup = accessGroup;
 
         NSArray *accounts = [query fetchAll:&error];
         if (accounts) {
