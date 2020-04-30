@@ -1,4 +1,3 @@
-cordova.define("cordova-plugin-secure-storage.SecureStorage", function(require, exports, module) {
 var SecureStorage;
 
 var SUPPORTED_PLATFORMS = ['android', 'ios', 'windows'];
@@ -33,7 +32,7 @@ var _executeNativeMethod = function (success, error, nativeMethodName, args) {
 
     // By convention a failure callback should always receive an instance
     // of a JavaScript Error object.
-    fail = function(err) {
+    fail = function (err) {
         // provide default message if no details passed to callback
         if (typeof err === 'undefined') {
             error(new Error('Error occured while executing native method.'));
@@ -134,5 +133,3 @@ if (!cordova.plugins.SecureStorage) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SecureStorage;
 }
-
-});
